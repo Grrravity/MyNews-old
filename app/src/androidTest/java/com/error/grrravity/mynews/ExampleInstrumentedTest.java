@@ -7,11 +7,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.error.grrravity.mynews.Models.APIReturns.ApiReturnMostPopuplar;
-import com.error.grrravity.mynews.Models.APIReturns.ApiReturnSearch;
-import com.error.grrravity.mynews.Models.APIReturns.ApiReturnTopStories;
+import com.error.grrravity.mynews.Models.APIReturns.APIReturnMostPopular;
+import com.error.grrravity.mynews.Models.APIReturns.APIReturnSearch;
+import com.error.grrravity.mynews.Models.APIReturns.APIReturnTopStories;
 import com.error.grrravity.mynews.Utils.Helper;
-import com.error.grrravity.mynews.Utils.NYTimesStreams;
+import com.error.grrravity.mynews.Utils.NYTStreams;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,81 +27,81 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class InstrumentedTest {
+class InstrumentedTest {
 
     Context context = InstrumentationRegistry.getTargetContext();
 
     // Top Stories test
     @Test
     public void fetchTopStoriesArticlesTest() throws Exception{
-        Observable<ApiReturnTopStories> observableArticles =
-                NYTimesStreams.streamFetchTopStoriesArticles();
+        Observable<APIReturnTopStories> observableArticles =
+                NYTStreams.streamFetchTopStoriesArticles();
 
-        TestObserver<ApiReturnTopStories> testObserver = new TestObserver<>();
+        TestObserver<APIReturnTopStories> testObserver = new TestObserver<>();
 
         observableArticles.subscribeWith(testObserver)
                 .assertNoErrors()
                 .assertNoTimeout()
                 .awaitTerminalEvent();
 
-        ApiReturnTopStories articlesFetched = testObserver.values().get(0);
+        APIReturnTopStories articlesFetched = testObserver.values().get(0);
 
         // Verify if there's at least 1 article
         assertNotEquals(articlesFetched.getResults().size(),0);
 
-        ApiReturnTopStories.Result article = articlesFetched.getResults().get(0);
+        APIReturnTopStories.Result article = articlesFetched.getResults().get(0);
         // Verify if article has Title, date, section and a URL.
+        assertNotNull ("Article has section", article.getSection());
         assertNotNull ("Article has title", article.getTitle());
         assertNotNull ("Article has date", article.getPublishedDate());
-        assertNotNull ("Article has section", article.getSection());
         assertNotNull ("Article has URL", article.getUrl());
     }
 
     // Most Popular test)
     @Test
     public void fetchMostPopularArticlesTest() throws Exception{
-        Observable<ApiReturnMostPopuplar> observableArticles =
-                NYTimesStreams.streamFetchMostPopularArticles();
+        Observable<APIReturnMostPopular> observableArticles =
+                NYTStreams.streamFetchMostPopularArticles();
 
-        TestObserver<ApiReturnMostPopuplar> testObserver = new TestObserver<>();
+        TestObserver<APIReturnMostPopular> testObserver = new TestObserver<>();
 
         observableArticles.subscribeWith(testObserver)
                 .assertNoErrors()
                 .assertNoTimeout()
                 .awaitTerminalEvent();
 
-        ApiReturnMostPopuplar articlesFetched = testObserver.values().get(0);
+        APIReturnMostPopular articlesFetched = testObserver.values().get(0);
 
         // Verify if there's at least 1 article
         assertNotEquals(articlesFetched.getResults().size(),0);
 
-        ApiReturnMostPopuplar.Result article = articlesFetched.getResults().get(0);
+        APIReturnMostPopular.Result article = articlesFetched.getResults().get(0);
         // Verify if article has Title, date, section and a URL.
+        assertNotNull ("Article has section", article.getSection());
         assertNotNull ("Article has title", article.getTitle());
         assertNotNull ("Article has date", article.getPublishedDate());
-        assertNotNull ("Article has section", article.getSection());
         assertNotNull ("Article has URL", article.getUrl());
     }
 
     // Search for categories test (tested with Arts category)
     @Test
     public void fetchCategoryTest() throws Exception{
-        Observable<ApiReturnSearch> observableArticles =
-                NYTimesStreams.streamFetchCategoryArticles("news_desk:(\"Arts\")");
+        Observable<APIReturnSearch> observableArticles =
+                NYTStreams.streamFetchCategoryArticles("news_desk:(\"Arts\")");
 
-        TestObserver<ApiReturnSearch> testObserver = new TestObserver<>();
+        TestObserver<APIReturnSearch> testObserver = new TestObserver<>();
 
         observableArticles.subscribeWith(testObserver)
                 .assertNoErrors()
                 .assertNoTimeout()
                 .awaitTerminalEvent();
 
-        ApiReturnSearch articlesFetched = testObserver.values().get(0);
+        APIReturnSearch articlesFetched = testObserver.values().get(0);
 
         // Verify if there's at least 1 article
         assertNotEquals(articlesFetched.getResponse().getDocs().size(),0);
 
-        ApiReturnSearch.Doc article = articlesFetched.getResponse().getDocs().get(0);
+        APIReturnSearch.Doc article = articlesFetched.getResponse().getDocs().get(0);
         // Verify if article has Title, date and a URL.
         assertNotNull ("Article has title", article.getHeadline().getMain());
         assertNotNull ("Article has date", article.getPubDate());
@@ -112,29 +112,29 @@ public class InstrumentedTest {
 
     @Test
     public void fetchSearchTest() throws Exception{
-        Observable<ApiReturnSearch> observableArticles =
-                NYTimesStreams.streamFetchSearchArticles("trump"
+        Observable<APIReturnSearch> observableArticles =
+                NYTStreams.streamFetchSearchArticles("trump"
                         ,"news_desk:(\"Politics\")", null, null);
 
-        TestObserver<ApiReturnSearch> testObserver = new TestObserver<>();
+        TestObserver<APIReturnSearch> testObserver = new TestObserver<>();
 
         observableArticles.subscribeWith(testObserver)
                 .assertNoErrors()
                 .assertNoTimeout()
                 .awaitTerminalEvent();
 
-        ApiReturnSearch articlesFetched = testObserver.values().get(0);
+        APIReturnSearch articlesFetched = testObserver.values().get(0);
 
         // Verify if there's at least 1 article
         assertNotEquals(articlesFetched.getResponse().getDocs().size(),0);
 
-        ApiReturnSearch.Doc article = articlesFetched.getResponse().getDocs().get(0);
+        APIReturnSearch.Doc article = articlesFetched.getResponse().getDocs().get(0);
         // Verify if article has Title, date and a URL.
         assertNotNull ("Article has title", article.getHeadline().getMain());
         assertNotNull ("Article has date", article.getPubDate());
         assertNotNull ("Article has URL", article.getWebUrl());
-        assertEquals("Politics", article.getNewsDesk());
         // Verify if the article is in the good section
+        assertEquals("Politics", article.getNewsDesk());
     }
 
     // Put date in DD/MM/YYYY and YYYYMMDD (for NYT API calls)
