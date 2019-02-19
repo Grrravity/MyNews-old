@@ -57,7 +57,10 @@ public class PageFragment extends Fragment {
         TextView textView= (TextView) result.findViewById(R.id.fragment_page_title);
 
         // Get data from Bundle (created in method newInstance)
-        int position = getArguments().getInt(KEY_POSITION, -1);
+        int position = 0;
+        if (getArguments() != null) {
+            position = getArguments().getInt(KEY_POSITION, -1);
+        }
 
         // Update widgets with it
         textView.setText("Page numéro "+position);

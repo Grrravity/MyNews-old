@@ -14,7 +14,7 @@ import com.error.grrravity.mynews.R;
 public class Helper {
 
     // Puts the date in DD/MM/YYYY format in a spinner
-    public static String processDate(int yearInt, int monthInt, int dayInt, TextView spinner){
+    public static String spinnerFormatDate(int yearInt, int monthInt, int dayInt, TextView spinner){
         String year = Integer.toString(yearInt);
         String month = (monthInt+1 < 10) ? "0" +
                 Integer.toString(monthInt+1) : Integer.toString(monthInt+1);
@@ -42,7 +42,7 @@ public class Helper {
     // Checks the validity of the form
     public static boolean parametersAreValid(Context context, EditText searchField,
                                              CheckBox cbArts, CheckBox cbBusiness,
-                                             CheckBox cbPolitics, CheckBox cbTravel){
+                                             CheckBox cbPolitics, CheckBox cbTechnology){
         if(searchField.getText().toString().trim().isEmpty()){
             Toast.makeText(context,
                     context.getResources().getString(R.string.verification_search_field),
@@ -51,7 +51,7 @@ public class Helper {
             return false;
         }
         if(!cbArts.isChecked() && !cbBusiness.isChecked() &&
-                !cbPolitics.isChecked() && !cbTravel.isChecked()){
+                !cbPolitics.isChecked() && !cbTechnology.isChecked()){
             Toast.makeText(context,
                     context.getResources().getString(R.string.verification_checkbox),
                     Toast.LENGTH_LONG).show();
@@ -60,7 +60,7 @@ public class Helper {
         return true;
     }
 
-    // Checks if the begin date < the end date in the Search form
+    // Checks if begin date is before the end date in the Search form
     public static boolean datesAreValid(Context context, String beginDate, String endDate){
         if(!beginDate.isEmpty() && !endDate.isEmpty()
                 && Integer.parseInt(beginDate) > Integer.parseInt(endDate)){

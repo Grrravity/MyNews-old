@@ -1,43 +1,51 @@
 package com.error.grrravity.mynews.Utils;
 
-import com.error.grrravity.mynews.Models.APIReturns.APIReturnMostPopular;
-import com.error.grrravity.mynews.Models.APIReturns.APIReturnSearch;
-import com.error.grrravity.mynews.Models.APIReturns.APIReturnTopStories;
+import com.error.grrravity.mynews.Models.APIReturns.APIArticles;
+import com.error.grrravity.mynews.Models.APIReturns.APISearch;
+
+import java.util.List;
 
 import io.reactivex.Observable;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface NYTServices {
 
     String API_KEY = "bab032fe-89c3-4c51-b84e-7ad0c350cca8";
 
-    // Top Stories
-    @GET("topstories/v2/home.json?api-key="+API_KEY)
-    Observable<APIReturnTopStories> fetchTopStoriesArticles();
+    @GET("svc/{section}.json?")
+    Observable<APIArticles> getBySection
+            (@Path("section") String section, @Query("api-key") String API_KEY);
 
-    // Most Popular
-    @GET("mostpopular/v2/viewed/7.json?api-key="+API_KEY)
-    Observable<APIReturnMostPopular> fetchMostPopularArticles();
+    @GET("svc/search/v2/articlesearch.json?")
+    Observable<APISearch> getSearch(@Query("api-key") String API_KEY,
+                                        @Query("q") String search,
+                                        @Query("fq")List<String> category,
+                                        @Query("begin_date")String beginDate,
+                                        @Query("end_date")String endDate,
+                                        @Query("sort") String sort
 
-    // Categories
-    @GET("search/v2/articlesearch.json?sort=newest&fl=web_url,headline,multimedia,news_desk,pub_date&api-key="+API_KEY)
-    Observable<APIReturnSearch> fetchCategoryArticles(@Query("fq") String section);
+    );
 
-    // Search and Notifications activity
-    @GET("search/v2/articlesearch.json?sort=newest&fl=web_url,headline,multimedia,news_desk,pub_date&api-key="+API_KEY)
-    Observable<APIReturnSearch> fetchSearchArticles(@Query("q") String query,
-                                                    @Query("fq") String section,
-                                                    @Query("begin_date") String beginDate,
-                                                    @Query("ebd_date") String endDate);
+    ThreadLocal<Retrofit> retrofit = new ThreadLocal<Retrofit>() {
+        @Override
+        protected Retrofit initialValue() {
+            return new Retrofit.Builder()
+                    .baseUrl("https://api.nytimes.com/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .client(okHttpClient)
+                    .build();
+        }
+    };
 
-    Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://api.nytimes.com/svc/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build();
-
 }

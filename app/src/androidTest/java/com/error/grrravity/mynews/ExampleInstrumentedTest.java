@@ -7,9 +7,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.error.grrravity.mynews.Models.APIReturns.APIReturnMostPopular;
-import com.error.grrravity.mynews.Models.APIReturns.APIReturnSearch;
-import com.error.grrravity.mynews.Models.APIReturns.APIReturnTopStories;
 import com.error.grrravity.mynews.Utils.Helper;
 import com.error.grrravity.mynews.Utils.NYTStreams;
 
@@ -113,7 +110,7 @@ class InstrumentedTest {
     @Test
     public void fetchSearchTest() throws Exception{
         Observable<APIReturnSearch> observableArticles =
-                NYTStreams.streamFetchSearchArticles("trump"
+                NYTStreams.streamFetchSearchArticles("Macron"
                         ,"news_desk:(\"Politics\")", null, null);
 
         TestObserver<APIReturnSearch> testObserver = new TestObserver<>();
@@ -147,7 +144,7 @@ class InstrumentedTest {
         int day = 1;
         String date;
 
-        date = Helper.processDate(year, month, day, spinner);
+        date = Helper.spinnerFormatDate(year, month, day, spinner);
 
         assertEquals("01/02/2019", spinner.getText());
         assertEquals("20190201", date);

@@ -1,9 +1,9 @@
 package com.error.grrravity.mynews.Utils;
 
-import com.error.grrravity.mynews.Models.APIReturns.APIReturnMostPopular;
-import com.error.grrravity.mynews.Models.APIReturns.APIReturnSearch;
-import com.error.grrravity.mynews.Models.APIReturns.APIReturnTopStories;
+import com.error.grrravity.mynews.Models.APIReturns.APIArticles;
+import com.error.grrravity.mynews.Models.APIReturns.APISearch;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -12,40 +12,42 @@ import io.reactivex.schedulers.Schedulers;
 
 public class NYTStreams {
 
-    // Top Stories API
-    public static Observable<APIReturnTopStories> streamFetchTopStoriesArticles(){
-        NYTServices nytService = NYTServices.retrofit.create(NYTServices.class);
-        return nytService.fetchTopStoriesArticles()
+    // getting articles
+    public static Observable<APIArticles> streamFetchArticles (String section, String api_key, boolean isMostPopular){
+        NYTServices nytService = NYTServices.retrofit.get().create(NYTServices.class);
+        return nytService.getBySection(getPath(section, isMostPopular), api_key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
     }
 
-    // Most Popular API
-    public static Observable<APIReturnMostPopular> streamFetchMostPopularArticles(){
-        NYTServices nytService = NYTServices.retrofit.create(NYTServices.class);
-        return nytService.fetchMostPopularArticles()
+    private static String getPath(String section, boolean isMostPopular) {
+        if (isMostPopular){
+            return "mostpopular/v2/mostviewed/" + section + "/1";
+        }
+        else {
+            return "topstories/v2/" + section;
+        }
+
+    }
+
+    // public static Observable<APIArticles>
+    // streamFetchMostPopularArticles(String section, String api_key){
+    //     NYTServices nytService = NYTServices.retrofit.get().create(NYTServices.class);
+    //     return nytService.getBySectionMp(section, api_key)
+    //             .subscribeOn(Schedulers.io())
+    //             .observeOn(AndroidSchedulers.mainThread())
+    //             .timeout(10, TimeUnit.SECONDS);
+    // }
+
+    // getting searched articles
+    public static Observable<APISearch> streamFetchSearchArticles
+    (String api_key, String search, List<String> category, String beginDate, String endDate){
+        NYTServices nytService = NYTServices.retrofit.get().create(NYTServices.class);
+        return nytService.getSearch(api_key, search, category, beginDate, endDate, "interest")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
     }
 
-    // Search API for categories
-    public static Observable<APIReturnSearch> streamFetchCategoryArticles(String section){
-        NYTServices nytService = NYTServices.retrofit.create(NYTServices.class);
-        return nytService.fetchCategoryArticles(section)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS);
-    }
-
-    // Search API for searches and notifications
-    public static Observable<APIReturnSearch>
-    streamFetchSearchArticles(String query, String category, String beginDate, String endDate){
-        NYTServices nytService = NYTServices.retrofit.create(NYTServices.class);
-        return nytService.fetchSearchArticles(query, category, beginDate, endDate)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS);
-    }
 }
