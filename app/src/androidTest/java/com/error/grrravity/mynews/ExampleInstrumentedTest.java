@@ -7,8 +7,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.error.grrravity.mynews.Utils.Helper;
-import com.error.grrravity.mynews.Utils.NYTStreams;
+import com.error.grrravity.mynews.utils.Helper;
+import com.error.grrravity.mynews.utils.NYTStreams;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

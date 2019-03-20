@@ -1,8 +1,6 @@
 package com.error.grrravity.mynews;
 
-import android.widget.TextView;
-
-import com.error.grrravity.mynews.Utils.Helper;
+import com.error.grrravity.mynews.utils.Helper;
 
 import org.junit.Test;
 
